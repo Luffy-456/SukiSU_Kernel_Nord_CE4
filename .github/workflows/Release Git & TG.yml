@@ -82,28 +82,26 @@ jobs:
           done
 
       - name: 8. Prepare GitHub Release Notes
-        id: prep_github_notes
-        env:
-          GITHUB_FIRMWARE_VERSION: ${{ github.event.inputs.firmware_version }}
         run: |
           NOTES=$(cat <<EOF
           # 🏁 Release SukiSU Ultra Kernel for OnePlus Nord CE 4
-
+      
           > **Flash this kernel on:** \`${GITHUB_FIRMWARE_VERSION}\`
-
+      
           ## 🛠 Flasher Recommendation
           - [Kernel Flasher](https://github.com/fatalcoder524/KernelFlasher/releases)
-
+      
           ## 📱 SukiSU-Ultra Manager
           - [SukiSU-Ultra Manager](https://github.com/SukiSU-Ultra/SukiSU-Ultra/releases)
-
+      
           ## 🔌 Susfs Module
           - [Susfs Module](https://github.com/sidex15/susfs4ksu-module/releases)
           EOF
           )
-          echo "notes<<EOF" >> $GITHUB_OUTPUT
-          echo "$NOTES" >> $GITHUB_OUTPUT
-          echo "EOF" >> $GITHUB_OUTPUT
+          echo "$NOTES" > release_notes.txt
+        env:
+          GITHUB_FIRMWARE_VERSION: ${{ github.event.inputs.firmware_version }}
+
 
       - name: 9. Prepare Telegram Notification Notes
         id: prep_telegram_notes
@@ -147,8 +145,9 @@ jobs:
         run: |
           gh release create "${{ steps.generate_tag.outputs.tag }}" \
             --title "Kernel Release - $(date +'%d %B %Y')" \
-            --notes "${{ steps.prep_github_notes.outputs.notes }}" \
+            --notes-file release_notes.txt \
             ./final-zips/*.zip
+
 
   notify_result:
     name: Notify Final Release Status
