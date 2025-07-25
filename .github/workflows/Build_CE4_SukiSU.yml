@@ -111,10 +111,12 @@ jobs:
         run: |
           echo "🔧 Validating input combinations..."
           FILE="${{ github.event.inputs.FILE }}"
-          # Define valid combinations, supports stripping suffix for family detection
+          
+          # Define valid combinations with base model only (no _v/_t/_u...)
           declare -A VALID_COMBINATIONS=(
             ["oneplus_nord_ce4"]="sm7550 crow android14 5.15"
           )
+          # Recursively strip "_[a-z]+" suffixes to match base key
           get_combination() {
             local key="$1"
             while true; do
@@ -129,6 +131,7 @@ jobs:
               fi
             done
           }
+          # Try to resolve FILE to a valid combination
           COMBINATION="$(get_combination "$FILE")" || {
             echo "❌ Unknown FILE: $FILE"
             echo "Valid base models:"
@@ -137,18 +140,22 @@ jobs:
             done
             exit 1
           }
+          # Split the combination into fields
           read CPU CPUD ANDROID_VERSION KERNEL_VERSION <<< "$COMBINATION"
           echo "✅ Valid combination: FILE=$FILE, CPU=$CPU, CPUD=$CPUD, ANDROID_VERSION=$ANDROID_VERSION, KERNEL_VERSION=$KERNEL_VERSION"
+          
+          # Export to environment
           echo "CPU=$CPU" >> $GITHUB_ENV
           echo "CPUD=$CPUD" >> $GITHUB_ENV
           echo "ANDROID_VERSION=$ANDROID_VERSION" >> $GITHUB_ENV
           echo "KERNEL_VERSION=$KERNEL_VERSION" >> $GITHUB_ENV
+          
+          # Set BUILD_METHOD based on ANDROID_VERSION and KERNEL_VERSION
           if [[ "$ANDROID_VERSION" == "android15" && "$KERNEL_VERSION" == "6.6" ]]; then
             echo "BUILD_METHOD=perf" >> $GITHUB_ENV
           else
             echo "BUILD_METHOD=gki" >> $GITHUB_ENV
-          
-
+          fi
 
       - name: Check Disk Space
         run: df -h
