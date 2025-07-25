@@ -83,6 +83,8 @@ jobs:
 
       - name: 8. Prepare GitHub Release Notes
         id: prep_github_notes
+        env:
+          GITHUB_FIRMWARE_VERSION: ${{ github.event.inputs.firmware_version }}
         run: |
           NOTES=$(cat <<EOF
           # 🏁 Release SukiSU Ultra Kernel for OnePlus Nord CE 4
@@ -102,8 +104,6 @@ jobs:
           echo "notes<<EOF" >> $GITHUB_OUTPUT
           echo "$NOTES" >> $GITHUB_OUTPUT
           echo "EOF" >> $GITHUB_OUTPUT
-        env:
-          GITHUB_FIRMWARE_VERSION: ${{ github.event.inputs.firmware_version }}
 
       - name: 9. Prepare Telegram Notification Notes
         id: prep_telegram_notes
@@ -164,10 +164,6 @@ jobs:
           token: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           format: markdown
           message: |
-            🎉 **Release Successful!**
-            ━━━━━━━━━━━━━━━━━━━━
-            The kernel release completed and all artifacts have been published.
-
             ${{ needs.release.outputs.telegram_notes }}
 
       - name: Notify on Failure
