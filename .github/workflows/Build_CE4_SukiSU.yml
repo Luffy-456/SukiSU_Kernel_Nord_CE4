@@ -85,7 +85,6 @@ jobs:
                 - Fast Build: `${{ github.event.inputs.FAST_BUILD }}`
                 - VFS: `${{ github.event.inputs.VFS }}`
                 - KPM: `${{ github.event.inputs.KPM }}`
-                - SCHED: `${{ github.event.inputs.SCHED }}`
                 - ZRAM: `${{ github.event.inputs.ZRAM }}`
             🕒 **Started:** `${{ steps.get_time.outputs.timestamp }}` IST
             ───────────────
@@ -148,7 +147,7 @@ jobs:
             echo "BUILD_METHOD=perf" >> $GITHUB_ENV
           else
             echo "BUILD_METHOD=gki" >> $GITHUB_ENV
-          }
+          
 
 
       - name: Check Disk Space
