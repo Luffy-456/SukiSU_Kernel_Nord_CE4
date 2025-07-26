@@ -111,7 +111,8 @@ jobs:
 
           ━━━━━━━━━━━━━━━━━━━━
           🏆 **Device:** OnePlus Nord CE 4  
-          🧬 **Variant:** SukiSU Ultra  
+          🧬 **Kernel Name:** NIKA KERNEL
+          🧬 **Root Method:** SukiSU Ultra  
           🗓 **Release Tag:** \`${{ steps.generate_tag.outputs.tag }}\`
 
           ━━━━━━━━━━━━━━━━━━━━
