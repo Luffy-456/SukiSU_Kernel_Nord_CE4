@@ -84,7 +84,7 @@ jobs:
       - name: 8. Prepare GitHub Release Notes
         run: |
           NOTES=$(cat <<EOF
-          # 🏁 Release SukiSU Ultra Kernel for OnePlus Nord CE 4
+          # 🏁 Release Nika Kernel for OnePlus Nord CE 4
       
           > **Flash this kernel on:** \`${GITHUB_FIRMWARE_VERSION}\`
       
